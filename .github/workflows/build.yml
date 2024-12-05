@@ -31,12 +31,12 @@ jobs:
         if: always()
         run: ./gradlew --no-configuration-cache bundleRelease
 
-      - name: Find APK path
+      - name: Find APK path (system-wide)
         id: find-apk
         run: |
           echo "Current working directory: $(pwd)"
-          find app/build/outputs -name "*.apk" -print -quit
-          echo "APK_FILE_PATH_MARKER: $(find app/build/outputs -name "*.apk" -print -quit)" 
+          apk_path=$(find . -name "*.apk" -print -quit)
+          echo "apk_path=$apk_path" >> $GITHUB_OUTPUT
 
       - name: Upload APK
         uses: actions/upload-artifact@v3

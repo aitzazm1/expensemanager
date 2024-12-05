@@ -29,7 +29,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
       - name: Run local tests
         if: always()
-        run: ./gradlew --no-configuration-cache bundleRelease
+        run: ./gradlew --no-configuration-cache bundleRelease -d
 
       - name: Find APK path (system-wide)
         id: find-apk
@@ -64,7 +64,21 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Run Module Coverage
-        run: ./gradlew debugCoverage
+        run: ./gradlew debugCoverage -d  # Add -d for detailed output
+
+      - name: Find APK path (system-wide)
+        id: find-apk-unit-test  # Use a different ID for this step
+        run: |
+          echo "Current working directory (unit-test): $(pwd)"
+          apk_path=$(find . -name "*.apk" -print -quit)
+          echo "apk_path=$apk_path" >> $GITHUB_OUTPUT
+
+      - name: Upload APK (unit-test)
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-debug.apk  # Use a different name for the artifact
+          path: ${{ steps.find-apk-unit-test.outputs.apk_path }}
+
       - name: Jacoco Report
         id: jacoco
         uses: madrapps/jacoco-report@v1.6.1

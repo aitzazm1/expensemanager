@@ -34,8 +34,9 @@ jobs:
       - name: Find APK path
         id: find-apk
         run: |
-          apk_path=$(find app/build/outputs -name "*.apk" -print -quit)
-          echo "apk_path=$apk_path" >> $GITHUB_OUTPUT
+          echo "Current working directory: $(pwd)"
+          find app/build/outputs -name "*.apk" -print -quit
+          echo "APK_FILE_PATH_MARKER: $(find app/build/outputs -name "*.apk" -print -quit)" 
 
       - name: Upload APK
         uses: actions/upload-artifact@v3

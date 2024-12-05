@@ -12,69 +12,58 @@ concurrency:
 jobs:
   bundle-release:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
-
     timeout-minutes: 60
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
-
       - name: Set up JDK 19
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 19
-
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-
       - name: Run local tests
         if: always()
         run: ./gradlew --no-configuration-cache bundleRelease
 
-      # This is the line to add:
+      - name: Find APK path
+        id: find-apk
+        run: |
+          apk_path=$(find app/build/outputs -name "*.apk" -print -quit)
+          echo "apk_path=$apk_path" >> $GITHUB_OUTPUT
+
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: app-release.apk 
-          path: app/build/outputs/apk/release/app-release.apk  
+          name: app-release.apk
+          path: ${{ steps.find-apk.outputs.apk_path }}
 
   unit-test:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
-
     timeout-minutes: 60
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
-
       - name: Set up JDK 19
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 19
-
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
       - name: Run Module Coverage
         run: ./gradlew debugCoverage
-
       - name: Jacoco Report
         id: jacoco
         uses: madrapps/jacoco-report@v1.6.1

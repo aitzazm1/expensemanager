@@ -22,7 +22,7 @@ the world of Android development by providing regular news updates.
 **Features**
 
 * Users can create multiple accounts to group their transactions under specific accounts
-* Create monthly budgets and find extra budget customimizing options
+* Create monthly budgets and find extra budget customimizing options.
 * Analyse and know the trends of your transactions on a day, week and monthly wise.
 * Interactive category grouping pie chart to understand where you are mostly spending your money.
 * Multiple currency switching in UI (Currency conversion is yet to be supported)
